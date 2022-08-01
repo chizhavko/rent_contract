@@ -17,7 +17,6 @@ contract Deposite {
         uint256 price;
         address payable landlord;
         bool isAvailable;
-        uint256 doorCode;
     }
 
     struct PayableInfo {
@@ -37,9 +36,9 @@ contract Deposite {
     event DeclinedBecauseOfLandlord(uint256 date, PayableInfo info);
 
 
-    constructor(uint256 deposite, uint256 price, uint256 doorCode) payable {
+    constructor(uint256 deposite, uint256 price) payable {
         require(msg.value >= deposite);
-        _flatInfo = FlatInfo(deposite, price, payable(msg.sender), true, doorCode);
+        _flatInfo = FlatInfo(deposite, price, payable(msg.sender), true);
     }
 
     function sign(uint256 duration) public payable {
@@ -78,7 +77,7 @@ contract Deposite {
     function declinedBecauseOfTenant() public {
         emit DeclinedBecauseOfTenant();
 
-        _flatInfo = FlatInfo(_flatInfo.deposite, _flatInfo.price, _flatInfo.landlord, true, _flatInfo.doorCode);
+        _flatInfo = FlatInfo(_flatInfo.deposite, _flatInfo.price, _flatInfo.landlord, true);
         _payInfo = PayableInfo(payable(address(0)),0,0,0,0);
     }
 
@@ -88,7 +87,7 @@ contract Deposite {
         emit DeclinedBecauseOfLandlord(block.timestamp, _payInfo);
 
         _payInfo.tenant.transfer(_flatInfo.deposite);
-        _flatInfo = FlatInfo(_flatInfo.deposite, _flatInfo.price, _flatInfo.landlord, true, _flatInfo.doorCode);
+        _flatInfo = FlatInfo(_flatInfo.deposite, _flatInfo.price, _flatInfo.landlord, true);
         _payInfo = PayableInfo(payable(address(0)),0,0,0,0);
     }
 }
